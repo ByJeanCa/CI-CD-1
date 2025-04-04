@@ -1,6 +1,9 @@
 pipeline {
     agent any
 
+    environment {
+        ENV_CONTENT = credentials('env-proyec1')
+    }
     stages {
         stage("Check Workspace") {
             steps {
@@ -10,6 +13,11 @@ pipeline {
         stage("Clone") {
             steps {
                 git url: 'https://github.com/ByJeanCa/CI-CD-1', credentialsId: 'git-token', branch: 'main'
+            }
+        }
+        stage("Create .env") {
+            steps {
+                writeFile file: '.env', text: "${ENV_CONTENT}"
             }
         }
         stage("Build") {
