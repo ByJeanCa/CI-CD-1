@@ -1,0 +1,35 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    hostname: "Api"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/db
+    networks:
+      - api-net
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+      - POSTGRES_USER=user
+    volumes:
+      - db-vol:/var/lib/postgresql/data
+    networks:
+      - api-net
+  
+networks:
+  api-net:
+    driver: bridge
+volumes:
+  db-vol:
+
+    
