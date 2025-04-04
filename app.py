@@ -4,13 +4,13 @@ import os
 
 app = Flask(__name__)
 
-# Configuración de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/tasks_db')
+# Leer DATABASE_URL desde variables de entorno
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Modelo de la tabla tasks
+# Modelo de la tarea
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
@@ -23,17 +23,16 @@ class Task(db.Model):
             'done': self.done
         }
 
-# Crear las tablas en la base de datos
+# Crear las tablas si no existen
 with app.app_context():
     db.create_all()
 
-# Ruta GET /tasks
+# Endpoints
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = Task.query.all()
     return jsonify([task.to_dict() for task in tasks]), 200
 
-# Ruta POST /tasks
 @app.route('/tasks', methods=['POST'])
 def create_task():
     data = request.get_json()
@@ -43,7 +42,6 @@ def create_task():
     new_task = Task(title=data['title'])
     db.session.add(new_task)
     db.session.commit()
-
     return jsonify(new_task.to_dict()), 201
 
 if __name__ == '__main__':
