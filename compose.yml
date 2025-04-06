@@ -25,18 +25,7 @@ services:
       - db-vol:/var/lib/postgresql/data
     networks:
       - api-net
-  jenkins:
-    image: jenkins/jenkins:latest
-    ports:
-      - "8080:8080"
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-    networks:
-      - api-net
 
-  
 networks:
   api-net:
     driver: bridge
