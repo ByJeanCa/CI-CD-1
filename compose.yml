@@ -11,7 +11,7 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
     networks:
-      - api-net
+      - jenkins-net
   db:
     image: postgres:latest
     restart: always
@@ -24,11 +24,11 @@ services:
     volumes:
       - db-vol:/var/lib/postgresql/data
     networks:
-      - api-net
+      - jenkins-net
 
 networks:
-  api-net:
-    driver: bridge
+  jenkins-net:
+    external: true
 volumes:
   db-vol:
   jenkins_home:
