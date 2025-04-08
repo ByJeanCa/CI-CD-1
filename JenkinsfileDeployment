@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Check Workspace') {
             steps {
@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                withCredentials([string(credentialsId: 'env-proyec', variable: 'SECRET_TEXT')]) {
+                withCredentials([string(credentialsId: 'env-proyec1', variable: 'SECRET_TEXT')]) {
                     sh """
                     echo "${SECRET_TEXT}" > ".env"
                     """
