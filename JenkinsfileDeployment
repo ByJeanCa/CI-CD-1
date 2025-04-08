@@ -15,13 +15,13 @@ pipeline {
                 git url: 'https://github.com/ByJeanCa/CI-CD-1', credentialsId: 'git-token', branch: 'main'
             }
         }
-        stage("Create .env") {
-            steps {
-                writeFile file: '.env', text: "${ENV_CONTENT}"
-            }
-        }
         stage("Build") {
             steps {
+                withCredentials([string(credentialsId: 'env-proyec', variable: 'SECRET_TEXT')]) {
+                    sh """
+                    echo "${SECRET_TEXT}" > ".env"
+                    """
+                }
                 sh "docker compose up -d --build"
             }
         }
