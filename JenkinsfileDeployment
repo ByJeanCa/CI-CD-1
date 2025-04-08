@@ -14,19 +14,16 @@ pipeline {
         }
         stage('Build') {
             steps {
-                withCredentials([string(credentialsId: 'env-proyec1', variable: 'SECRET_TEXT')]) {
-                    script{
-                        def file = new File("${env.WORKSPACE}/.env")
-                        file.text = $SECRET_TEXT
-                    }
-                    sh "docker compose up -d --build"
+                withCredentials([file(credentialsId: 'env-proyec1', variable: 'SECRET_FILE')]) {
+                    sh 'cp "$SECRET_FILE" .env'                    
                 }
+                sh "docker compose up -d --build"
             }
         }
         stage('Run') {
             steps {
                 sh """
-                curl "http://localhost:5000/tasks"
+                curl "http://api:5000/tasks"
                 """
             }
         }
