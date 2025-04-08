@@ -14,8 +14,10 @@ pipeline {
         }
         stage('Build') {
             steps {
-                withCredentials([file(credentialsId: 'env-proyec1', variable: 'SECRET_FILE')]) {
-                    sh 'cp "$SECRET_FILE" .env'                    
+                withCredentials([string(credentialsId: 'env-proyec1', variable: 'SECRET_TEXT')]) {
+                    sh """
+                    echo "${SECRET_TEXT}" > ".env"
+                    """
                 }
                 sh "docker compose up -d --build"
             }
