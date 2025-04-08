@@ -2,17 +2,17 @@ pipeline {
     agent any
     
     stages {
-        stage("Check Workspace") {
+        stage('Check Workspace') {
             steps {
                 sh "rm -rf ./*"
             }
         }
-        stage("Clone") {
+        stage('Clone') {
             steps {
                 git url: 'https://github.com/ByJeanCa/CI-CD-1', credentialsId: 'git-token', branch: 'main'
             }
         }
-        stage("Build") {
+        stage('Build') {
             steps {
                 withCredentials([string(credentialsId: 'env-proyec', variable: 'SECRET_TEXT')]) {
                     sh """
@@ -22,7 +22,7 @@ pipeline {
                 sh "docker compose up -d --build"
             }
         }
-        stage("Run") {
+        stage('Run') {
             steps {
                 sh """
                 curl "http://localhost:5000/tasks"
