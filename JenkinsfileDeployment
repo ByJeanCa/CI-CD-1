@@ -2,22 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage("Check Workspace") {
+        stage('Check Workspace') {
             steps {
                 sh "rm -rf ./*"
             }
         }
-        stage("Clone") {
+        stage('Clone') {
             steps {
                 git url: 'https://github.com/ByJeanCa/CI-CD-1', credentialsId: 'git-token', branch: 'main'
             }
         }
-        stage("Build") {
+        stage('Build') {
             steps {
-                sh "docker compose up -d --build"
+                withCredentials([string(credentialsId: 'env-proyec1', variable: 'SECRET_TEXT')]) {
+                    script{
+                        def file = new File("${env.WORKSPACE}/.env")
+                        file.text = $SECRET_TEXT
+                    }
+                    sh "docker compose up -d --build"
+                }
             }
         }
-        stage("Run") {
+        stage('Run') {
             steps {
                 sh """
                 curl "http://localhost:5000/tasks"
