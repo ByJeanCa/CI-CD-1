@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Check Workspace') {
             steps {
@@ -14,13 +14,12 @@ pipeline {
         }
         stage('Build') {
             steps {
-                withCredentials([string(credentialsId: 'env-proyec1', variable: 'SECRET_TEXT')]) {
-                    script{
-                        def file = new File("${env.WORKSPACE}/.env")
-                        file.text = $SECRET_TEXT
-                    }
-                    sh "docker compose up -d --build"
+                withCredentials([string(credentialsId: 'env-proyec', variable: 'SECRET_TEXT')]) {
+                    sh """
+                    echo "${SECRET_TEXT}" > ".env"
+                    """
                 }
+                sh "docker compose up -d --build"
             }
         }
         stage('Run') {
